@@ -16,6 +16,8 @@
     --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     --border-radius: 8px;
     --transition: all 0.3s ease;
+    --animation-duration: 0.3s;
+    --focus-outline: 2px solid var(--primary);
 }
 
 * {
@@ -56,7 +58,6 @@ a:hover {
 .btn-primary {
     display: inline-block;
     background: var(--bg-gradient);
-    color: var(--text-white);
     padding: 12px 25px;
     border-radius: 30px;
     border: none;
@@ -64,6 +65,9 @@ a:hover {
     cursor: pointer;
     transition: var(--transition);
     box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+    color: var(--text-white);
+    background-color: var(--primary); /* fallback для градиента */
+    background-image: var(--bg-gradient);
 }
 
 .btn-primary:hover {
@@ -179,7 +183,8 @@ header .container {
 }
 
 .hero-image, .service-card, .btn-primary {
-    will-change: transform;
+    will-change: transform, box-shadow;
+    backface-visibility: hidden;
 }
 
 /* Hero Section */
@@ -567,6 +572,30 @@ textarea:focus {
     outline-offset: 2px;
 }
 
+:focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+}
+
+.btn-primary.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-primary.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: var(--text-white);
+    animation: spin 1s linear infinite;
+    top: 50%;
+    left: 50%;
+    margin: -10px 0 0 -10px;
+}
+
 /* Footer */
 footer {
     background-color: var(--bg-dark);
@@ -658,11 +687,16 @@ footer {
     color: rgba(255, 255, 255, 0.7);
 }
 
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 /* Responsive */
 @media (max-width: 992px) {
     .hero .container, 
     .about .container,
-    .contact-wrapper {
+    .contact-wrapper,
+    .footer-content {
         flex-direction: column;
     }
     
@@ -737,20 +771,17 @@ footer {
 }
 
 @media (max-width: 576px) {
+    :root {
+        --border-radius: 6px;
+    }
+    
+    .hero {
+        padding: 120px 0 80px;
+    }
+    
     .section-title {
-        font-size: 2rem;
-    }
-    
-    .hero h2 {
-        font-size: 2.2rem;
-    }
-    
-    .about-features {
-        grid-template-columns: 1fr;
-    }
-    
-    .testimonial-content {
-        padding: 30px 20px;
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
     }
 }
 
