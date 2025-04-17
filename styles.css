@@ -1,4 +1,6 @@
 :root {
+    --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-in-out-quad: cubic-bezier(0.46, 0.03, 0.52, 0.96);
     --primary: #E91E63;
     --primary-light: #F8BBD0;
     --primary-dark: #C2185B;
@@ -123,6 +125,12 @@ header .container {
     font-weight: 400;
 }
 
+.nav-links a:after,
+.btn-primary:hover,
+.service-card:hover {
+    transition: var(--transition);
+}
+
 .nav-links {
     display: flex;
     list-style: none;
@@ -168,6 +176,10 @@ header .container {
     background-color: var(--primary);
     border-radius: 3px;
     transition: var(--transition);
+}
+
+.hero-image, .service-card, .btn-primary {
+    will-change: transform;
 }
 
 /* Hero Section */
@@ -546,6 +558,15 @@ header .container {
     box-shadow: 0 0 0 3px var(--primary-light);
 }
 
+a:focus, 
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 /* Footer */
 footer {
     background-color: var(--bg-dark);
@@ -639,11 +660,14 @@ footer {
 
 /* Responsive */
 @media (max-width: 992px) {
-    .hero .container, .about .container {
+    .hero .container, 
+    .about .container,
+    .contact-wrapper {
         flex-direction: column;
     }
     
-    .hero-content, .about-content {
+    .hero-content, 
+    .about-content {
         padding-right: 0;
         margin-bottom: 50px;
         text-align: center;
