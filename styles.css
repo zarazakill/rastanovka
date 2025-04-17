@@ -190,7 +190,7 @@ header .container {
 /* Hero Section */
 .hero {
     padding: 150px 0 100px;
-    background: linear-gradient(to right, #FDF8F9, #F3E5F5);
+    background: linear-gradient(to right, var(--bg-light), var(--primary-light));
     overflow: hidden;
 }
 
