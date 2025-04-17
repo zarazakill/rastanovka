@@ -144,3 +144,83 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', checkScroll);
 });
 
+// Оптимизированный обработчик скролла
+let scrollTimeout;
+function handleScroll() {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        const scrollPosition = window.scrollY;
+        if (scrollPosition > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        checkScroll();
+    }, 100);
+}
+
+// Debounce для resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        if (window.innerWidth >= 768 && navLinks.classList.contains('active')) {
+            navLinks.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
+    }, 250);
+});
+
+// Улучшенная форма обратной связи
+if (contactForm) {
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        
+        // Валидация
+        if (!formData.get('name') || !formData.get('email') || !formData.get('phone')) {
+            showAlert('Пожалуйста, заполните все обязательные поля.', 'error');
+            return;
+        }
+        
+        // Индикатор загрузки
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Отправка...';
+        
+        try {
+            // В реальном проекте заменить на реальный запрос
+            const response = await mockApiCall(formData);
+            
+            showAlert('Спасибо за вашу заявку! Я свяжусь с вами в ближайшее время.', 'success');
+            contactForm.reset();
+        } catch (error) {
+            showAlert('Произошла ошибка при отправке. Пожалуйста, попробуйте позже.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Отправить заявку';
+        }
+    });
+}
+
+function showAlert(message, type) {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.textContent = message;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        alert.remove();
+    }, 5000);
+}
+
+// Мок-функция для имитации API
+async function mockApiCall(formData) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            console.log('Form data:', Object.fromEntries(formData));
+            resolve({ status: 'success' });
+        }, 1500);
+    });
+}
