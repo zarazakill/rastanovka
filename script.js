@@ -3,21 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
     loadComponents();
     
     // Initialize functionality after components are loaded
-    setTimeout(initializeApp, 300);
+    setTimeout(initializeApp, 100);
 });
 
 // Component loader function
 function loadComponents() {
     // Define components to load
     const components = [
-        { id: 'header-container', path: 'components/header.html' },
-        { id: 'hero-container', path: 'components/hero.html' },
-        { id: 'services-container', path: 'components/services.html' },
-        { id: 'about-container', path: 'components/about.html' },
-        { id: 'approach-container', path: 'components/approach.html' },
-        { id: 'testimonials-container', path: 'components/testimonials.html' },
-        { id: 'contact-container', path: 'components/contact.html' },
-        { id: 'footer-container', path: 'components/footer.html' }
+        { id: 'header-container', path: '/components/header.html' },
+        { id: 'hero-container', path: '/components/hero.html' },
+        { id: 'services-container', path: '/components/services.html' },
+        { id: 'about-container', path: '/components/about.html' },
+        { id: 'approach-container', path: '/components/approach.html' },
+        { id: 'testimonials-container', path: '/components/testimonials.html' },
+        { id: 'contact-container', path: '/components/contact.html' },
+        { id: 'footer-container', path: '/components/footer.html' }
     ];
     
     // Load each component
@@ -47,14 +47,22 @@ function loadComponents() {
 }
 
 function initializeApp() {
-    // Initialize mobile menu first
-    const mobileMenu = initMobileMenu();
+    // Mobile menu toggle
+    initMobileMenu();
     
-    // Then other functions that might depend on components
-    initSmoothScrolling(mobileMenu.navLinks);
+    // Smooth scrolling for anchor links
+    initSmoothScrolling();
+    
+    // Testimonials slider
     initTestimonialsSlider();
+    
+    // Contact form submission
     initContactForm();
+    
+    // Header scroll effect
     initHeaderScrollEffect();
+    
+    // Animate elements on scroll
     initScrollAnimations();
 }
 
@@ -67,23 +75,18 @@ function initMobileMenu() {
             navLinks.classList.toggle('active');
             document.body.classList.toggle('menu-open');
         });
-        
-        return {
-            navLinks: navLinks
-        };
     }
-    
-    return {
-        navLinks: null
-    };
 }
 
-function initSmoothScrolling(navLinks) {
+function initSmoothScrolling() {
+    // Removed direct selector that gets all anchors at once
+    // Now we use a delayed approach to ensure components are loaded
     setTimeout(() => {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
+                const navLinks = document.querySelector('.nav-links');
                 if (navLinks && navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                     document.body.classList.remove('menu-open');
@@ -100,7 +103,7 @@ function initSmoothScrolling(navLinks) {
                 }
             });
         });
-    }, 500); // Increased timeout to ensure components are loaded
+    }, 300);
 }
 
 function initTestimonialsSlider() {
@@ -144,57 +147,55 @@ function initTestimonialsSlider() {
             }
             showTestimonial(nextTestimonial);
         }, 7000);
-    }, 800);
+    }, 500);
 }
 
 function initContactForm() {
+    // Wait for contact form to be loaded
     setTimeout(() => {
         const contactForm = document.getElementById('contactForm');
         
-        if (!contactForm) {
-            console.error('Форма не найдена!');
-            return; // Прерываем выполнение, если форма не загружена
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const service = document.getElementById('service').value;
+                const message = document.getElementById('message').value;
+                
+                // Simple validation
+                if (!name || !email || !phone) {
+                    alert('Пожалуйста, заполните все обязательные поля.');
+                    return;
+                }
+                
+                // Simulate form submission
+                const formData = {
+                    name,
+                    email,
+                    phone,
+                    service,
+                    message
+                };
+                
+                console.log('Form submitted:', formData);
+                
+                // Show success message
+                contactForm.innerHTML = `
+                    <div class="success-message">
+                        <svg width="60" height="60" viewBox="0 0 24 24">
+                            <path fill="#4CAF50" d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2ZM10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z"/>
+                        </svg>
+                        <h3>Спасибо за вашу заявку!</h3>
+                        <p>Я свяжусь с вами в ближайшее время.</p>
+                    </div>
+                `;
+            });
         }
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const service = document.getElementById('service').value;
-            const message = document.getElementById('message').value;
-            
-            // Simple validation
-            if (!name || !email || !phone) {
-                alert('Пожалуйста, заполните все обязательные поля.');
-                return;
-            }
-            
-            // Simulate form submission
-            const formData = {
-                name,
-                email,
-                phone,
-                service,
-                message
-            };
-            
-            console.log('Form submitted:', formData);
-            
-            // Show success message
-            contactForm.innerHTML = `
-                <div class="success-message">
-                    <svg width="60" height="60" viewBox="0 0 24 24">
-                        <path fill="#4CAF50" d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2ZM10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z"/>
-                    </svg>
-                    <h3>Спасибо за вашу заявку!</h3>
-                    <p>Я свяжусь с вами в ближайшее время.</p>
-                </div>
-            `;
-        });
-    }, 800);
+    }, 500);
 }
 
 function initHeaderScrollEffect() {
