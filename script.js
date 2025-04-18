@@ -1,226 +1,240 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Load components
+    loadComponents();
+    
+    // Initialize functionality after components are loaded
+    setTimeout(initializeApp, 100);
+});
+
+// Component loader function
+function loadComponents() {
+    // Define components to load
+    const components = [
+        { id: 'header-container', path: '/components/header.html' },
+        { id: 'hero-container', path: '/components/hero.html' },
+        { id: 'services-container', path: '/components/services.html' },
+        { id: 'about-container', path: '/components/about.html' },
+        { id: 'approach-container', path: '/components/approach.html' },
+        { id: 'testimonials-container', path: '/components/testimonials.html' },
+        { id: 'contact-container', path: '/components/contact.html' },
+        { id: 'footer-container', path: '/components/footer.html' }
+    ];
+    
+    // Load each component
+    components.forEach(component => {
+        fetch(component.path)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById(component.id).innerHTML = html;
+                
+                // Special handling for sections with their own IDs
+                if (component.id === 'services-container') {
+                    document.querySelector('#services-container section').id = 'services';
+                } else if (component.id === 'about-container') {
+                    document.querySelector('#about-container section').id = 'about';
+                } else if (component.id === 'approach-container') {
+                    document.querySelector('#approach-container section').id = 'approach';
+                } else if (component.id === 'testimonials-container') {
+                    document.querySelector('#testimonials-container section').id = 'testimonials';
+                } else if (component.id === 'contact-container') {
+                    document.querySelector('#contact-container section').id = 'contact';
+                }
+            })
+            .catch(error => {
+                console.error(`Error loading component ${component.path}:`, error);
+            });
+    });
+}
+
+function initializeApp() {
     // Mobile menu toggle
+    initMobileMenu();
+    
+    // Smooth scrolling for anchor links
+    initSmoothScrolling();
+    
+    // Testimonials slider
+    initTestimonialsSlider();
+    
+    // Contact form submission
+    initContactForm();
+    
+    // Header scroll effect
+    initHeaderScrollEffect();
+    
+    // Animate elements on scroll
+    initScrollAnimations();
+}
+
+function initMobileMenu() {
     const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
     const navLinks = document.querySelector('.nav-links');
     
-    mobileMenuBtn.addEventListener('click', function() {
-        navLinks.classList.toggle('active');
-        document.body.classList.toggle('menu-open');
-    });
-
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            if (navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                document.body.classList.remove('menu-open');
-            }
-            
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-    
-    // Testimonials slider
-    const testimonials = document.querySelectorAll('.testimonial');
-    const dots = document.querySelectorAll('.dot');
-    let currentTestimonial = 0;
-    
-    function showTestimonial(index) {
-        testimonials.forEach(testimonial => {
-            testimonial.classList.remove('active');
-        });
-        
-        dots.forEach(dot => {
-            dot.classList.remove('active');
-        });
-        
-        testimonials[index].classList.add('active');
-        dots[index].classList.add('active');
-        currentTestimonial = index;
-    }
-    
-    // Initialize slider with first testimonial
-    showTestimonial(0);
-    
-    // Set up dot click event
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-            showTestimonial(index);
-        });
-    });
-    
-    // Auto rotate testimonials
-    setInterval(() => {
-        let nextTestimonial = currentTestimonial + 1;
-        if (nextTestimonial >= testimonials.length) {
-            nextTestimonial = 0;
-        }
-        showTestimonial(nextTestimonial);
-    }, 7000);
-    
-    // Contact form submission
-    const contactForm = document.getElementById('contactForm');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const service = document.getElementById('service').value;
-            const message = document.getElementById('message').value;
-            
-            // Simple validation
-            if (!name || !email || !phone) {
-                alert('Пожалуйста, заполните все обязательные поля.');
-                return;
-            }
-            
-            // Simulate form submission - in a real project, you would send data to a server
-            const formData = {
-                name,
-                email,
-                phone,
-                service,
-                message
-            };
-            
-            console.log('Form submitted:', formData);
-            
-            // Show success message
-            contactForm.innerHTML = `
-                <div class="success-message">
-                    <svg width="60" height="60" viewBox="0 0 24 24">
-                        <path fill="#4CAF50" d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2ZM10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z"/>
-                    </svg>
-                    <h3>Спасибо за вашу заявку!</h3>
-                    <p>Я свяжусь с вами в ближайшее время.</p>
-                </div>
-            `;
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
         });
     }
-    
-    // Header scroll effect
-    const header = document.querySelector('header');
-    
-    window.addEventListener('scroll', function() {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
-    
-    // Animate elements on scroll
-    const animateElements = document.querySelectorAll('.service-card, .step, .about-image, .contact-form');
-    
-    function checkScroll() {
-        animateElements.forEach(element => {
-            const elementPosition = element.getBoundingClientRect().top;
-            const windowHeight = window.innerHeight;
-            
-            if (elementPosition < windowHeight * 0.9) {
-                element.classList.add('animated');
-            }
-        });
-    }
-    
-    // Initial check
-    checkScroll();
-    
-    // Check on scroll
-    window.addEventListener('scroll', checkScroll);
-});
-
-// Оптимизированный обработчик скролла
-let scrollTimeout;
-function handleScroll() {
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-        const scrollPosition = window.scrollY;
-        if (scrollPosition > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-        checkScroll();
-    }, 100);
 }
 
-// Debounce для resize
-let resizeTimeout;
-window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        if (window.innerWidth >= 768 && navLinks.classList.contains('active')) {
-            navLinks.classList.remove('active');
-            document.body.classList.remove('menu-open');
-        }
-    }, 250);
-});
-
-// Улучшенная форма обратной связи
-if (contactForm) {
-    contactForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const submitBtn = this.querySelector('button[type="submit"]');
-        
-        // Валидация
-        if (!formData.get('name') || !formData.get('email') || !formData.get('phone')) {
-            showAlert('Пожалуйста, заполните все обязательные поля.', 'error');
-            return;
-        }
-        
-        // Индикатор загрузки
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Отправка...';
-        
-        try {
-            // В реальном проекте заменить на реальный запрос
-            const response = await mockApiCall(formData);
-            
-            showAlert('Спасибо за вашу заявку! Я свяжусь с вами в ближайшее время.', 'success');
-            contactForm.reset();
-        } catch (error) {
-            showAlert('Произошла ошибка при отправке. Пожалуйста, попробуйте позже.', 'error');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Отправить заявку';
-        }
-    });
-}
-
-function showAlert(message, type) {
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type}`;
-    alert.textContent = message;
-    document.body.appendChild(alert);
-    
+function initSmoothScrolling() {
+    // Removed direct selector that gets all anchors at once
+    // Now we use a delayed approach to ensure components are loaded
     setTimeout(() => {
-        alert.remove();
-    }, 5000);
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const navLinks = document.querySelector('.nav-links');
+                if (navLinks && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                }
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }, 300);
 }
 
-// Мок-функция для имитации API
-async function mockApiCall(formData) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            console.log('Form data:', Object.fromEntries(formData));
-            resolve({ status: 'success' });
-        }, 1500);
-    });
+function initTestimonialsSlider() {
+    // Wait for testimonials to be loaded
+    setTimeout(() => {
+        const testimonials = document.querySelectorAll('.testimonial');
+        const dots = document.querySelectorAll('.dot');
+        let currentTestimonial = 0;
+        
+        if (!testimonials.length || !dots.length) return;
+        
+        function showTestimonial(index) {
+            testimonials.forEach(testimonial => {
+                testimonial.classList.remove('active');
+            });
+            
+            dots.forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            testimonials[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentTestimonial = index;
+        }
+        
+        // Initialize slider with first testimonial
+        showTestimonial(0);
+        
+        // Set up dot click event
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showTestimonial(index);
+            });
+        });
+        
+        // Auto rotate testimonials
+        setInterval(() => {
+            let nextTestimonial = currentTestimonial + 1;
+            if (nextTestimonial >= testimonials.length) {
+                nextTestimonial = 0;
+            }
+            showTestimonial(nextTestimonial);
+        }, 7000);
+    }, 500);
+}
+
+function initContactForm() {
+    // Wait for contact form to be loaded
+    setTimeout(() => {
+        const contactForm = document.getElementById('contactForm');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const service = document.getElementById('service').value;
+                const message = document.getElementById('message').value;
+                
+                // Simple validation
+                if (!name || !email || !phone) {
+                    alert('Пожалуйста, заполните все обязательные поля.');
+                    return;
+                }
+                
+                // Simulate form submission
+                const formData = {
+                    name,
+                    email,
+                    phone,
+                    service,
+                    message
+                };
+                
+                console.log('Form submitted:', formData);
+                
+                // Show success message
+                contactForm.innerHTML = `
+                    <div class="success-message">
+                        <svg width="60" height="60" viewBox="0 0 24 24">
+                            <path fill="#4CAF50" d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2ZM10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z"/>
+                        </svg>
+                        <h3>Спасибо за вашу заявку!</h3>
+                        <p>Я свяжусь с вами в ближайшее время.</p>
+                    </div>
+                `;
+            });
+        }
+    }, 500);
+}
+
+function initHeaderScrollEffect() {
+    // Wait for header to be loaded
+    setTimeout(() => {
+        const header = document.querySelector('header');
+        
+        if (header) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+    }, 200);
+}
+
+function initScrollAnimations() {
+    // Wait for elements to be loaded
+    setTimeout(() => {
+        const animateElements = document.querySelectorAll('.service-card, .step, .about-image, .contact-form');
+        
+        function checkScroll() {
+            animateElements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight * 0.9) {
+                    element.classList.add('animated');
+                }
+            });
+        }
+        
+        // Initial check
+        checkScroll();
+        
+        // Check on scroll
+        window.addEventListener('scroll', checkScroll);
+    }, 800);
 }
