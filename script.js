@@ -10,14 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
 function loadComponents() {
     // Define components to load
     const components = [
-        { id: 'header-container', path: '/components/header.html' },
-        { id: 'hero-container', path: '/components/hero.html' },
-        { id: 'services-container', path: '/components/services.html' },
-        { id: 'about-container', path: '/components/about.html' },
-        { id: 'approach-container', path: '/components/approach.html' },
-        { id: 'testimonials-container', path: '/components/testimonials.html' },
-        { id: 'contact-container', path: '/components/contact.html' },
-        { id: 'footer-container', path: '/components/footer.html' }
+        { id: 'header-container', path: 'components/header.html' },
+        { id: 'hero-container', path: 'components/hero.html' },
+        { id: 'services-container', path: 'components/services.html' },
+        { id: 'about-container', path: 'components/about.html' },
+        { id: 'approach-container', path: 'components/approach.html' },
+        { id: 'testimonials-container', path: 'components/testimonials.html' },
+        { id: 'contact-container', path: 'components/contact.html' },
+        { id: 'footer-container', path: 'components/footer.html' }
     ];
     
     // Load each component
