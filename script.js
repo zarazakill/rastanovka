@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadComponents();
     
     // Initialize functionality after components are loaded
-    setTimeout(initializeApp, 100);
+    setTimeout(initializeApp, 300);
 });
 
 // Component loader function
@@ -47,22 +47,14 @@ function loadComponents() {
 }
 
 function initializeApp() {
-    // Mobile menu toggle
-    initMobileMenu();
+    // Initialize mobile menu first
+    const mobileMenu = initMobileMenu();
     
-    // Smooth scrolling for anchor links
-    initSmoothScrolling();
-    
-    // Testimonials slider
+    // Then other functions that might depend on components
+    initSmoothScrolling(mobileMenu.navLinks);
     initTestimonialsSlider();
-    
-    // Contact form submission
     initContactForm();
-    
-    // Header scroll effect
     initHeaderScrollEffect();
-    
-    // Animate elements on scroll
     initScrollAnimations();
 }
 
@@ -75,18 +67,23 @@ function initMobileMenu() {
             navLinks.classList.toggle('active');
             document.body.classList.toggle('menu-open');
         });
+        
+        return {
+            navLinks: navLinks
+        };
     }
+    
+    return {
+        navLinks: null
+    };
 }
 
-function initSmoothScrolling() {
-    // Removed direct selector that gets all anchors at once
-    // Now we use a delayed approach to ensure components are loaded
+function initSmoothScrolling(navLinks) {
     setTimeout(() => {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                const navLinks = document.querySelector('.nav-links');
                 if (navLinks && navLinks.classList.contains('active')) {
                     navLinks.classList.remove('active');
                     document.body.classList.remove('menu-open');
@@ -103,7 +100,7 @@ function initSmoothScrolling() {
                 }
             });
         });
-    }, 300);
+    }, 500); // Increased timeout to ensure components are loaded
 }
 
 function initTestimonialsSlider() {
@@ -147,17 +144,20 @@ function initTestimonialsSlider() {
             }
             showTestimonial(nextTestimonial);
         }, 7000);
-    }, 500);
+    }, 800);
 }
 
 function initContactForm() {
-    // Wait for contact form to be loaded
     setTimeout(() => {
         const contactForm = document.getElementById('contactForm');
         
-        if (contactForm) {
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+        if (!contactForm) {
+            console.error('Форма не найдена!');
+            return; // Прерываем выполнение, если форма не загружена
+        }
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
                 
                 // Get form values
                 const name = document.getElementById('name').value;
@@ -195,7 +195,7 @@ function initContactForm() {
                 `;
             });
         }
-    }, 500);
+    }, 800);
 }
 
 function initHeaderScrollEffect() {
